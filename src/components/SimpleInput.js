@@ -1,50 +1,38 @@
-import { useState } from "react";
+import useInput from "../hooks/use-input";
 
 const SimpleInput = (props) => {
-  const [enteredName, setEnteredName] = useState("");
-  const [enteredEmail, setEnteredEmail] = useState("");
+  const {
+    value: enteredName,
+    isValid: isNameValid,
+    hasError: nameInputInvalid,
+    inputHandler: nameInputHandler,
+    blurHandler: nameInputLostFocusHandler,
+    reset: resetNameInput,
+  } = useInput((value) => value.trim() !== "");
 
-  const [isNameTouched, setIsNameTouched] = useState(false);
-  const [isEmailTouched, setIsEmailTouched] = useState(false);
-
-  const isNameValid = enteredName.trim() !== "";
-  const isEmailValid = enteredEmail.includes("@");
-  const nameInputInvalid = !isNameValid && isNameTouched;
-  const emailInputInvalid = !isEmailValid && isEmailTouched;
+  const {
+    value: enteredEmail,
+    isValid: isEmailValid,
+    hasError: emailInputInvalid,
+    inputHandler: emailInputHandler,
+    blurHandler: emailInputLostFocusHandler,
+    reset: resetEmailInput,
+  } = useInput((value) => value.includes("@"));
 
   let isFormValid = false;
   if (isNameValid && isEmailValid) {
     isFormValid = true;
   }
 
-  const nameInputHandler = (event) => {
-    setEnteredName(event.target.value);
-  };
-
-  const nameInputLostFocusHandler = (event) => {
-    setIsNameTouched(true);
-  };
-
-  const emailInputHandler = (event) => {
-    setEnteredEmail(event.target.value);
-  };
-
-  const emailInputLostFocusHandler = (event) => {
-    setIsEmailTouched(true);
-  };
-
   const formSubmitHandler = (event) => {
     event.preventDefault();
-    setIsNameTouched(true);
-    setIsEmailTouched(true);
 
     if (!isNameValid || !isEmailValid) {
       return;
     }
-    setEnteredName("");
-    setIsNameTouched(false);
-    setEnteredEmail("");
-    setIsEmailTouched(false);
+
+    resetNameInput();
+    resetEmailInput();
   };
 
   const nameInputClasses = nameInputInvalid
